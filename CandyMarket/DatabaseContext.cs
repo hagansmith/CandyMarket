@@ -7,9 +7,9 @@ namespace CandyMarket
 {
 	internal class DatabaseContext
 	{
-		private int _countOfTaffy;
-		private int _countOfCandyCoated;
-		private int _countOfChocolateBar;
+		private int _countOfTaffy = 3;
+		private int _countOfCandyCoated = 2;
+		private int _countOfChocolateBar = 1;
 		private int _countOfZagnut;
 
 		/**
@@ -63,5 +63,31 @@ namespace CandyMarket
 					break;
 			}
 		}
-	}
+
+        internal void EatNewCandy(char selectedCandyMenuOption)
+        {
+            var candyOption = int.Parse(selectedCandyMenuOption.ToString());
+
+            var maybeCandyMaybeNot = (CandyType)selectedCandyMenuOption;
+            var forRealTheCandyThisTime = (CandyType)candyOption;
+
+            switch (forRealTheCandyThisTime)
+            {
+                case CandyType.TaffyNotLaffy:
+                    --_countOfTaffy;
+                    break;
+                case CandyType.CandyCoated:
+                    --_countOfCandyCoated;
+                    break;
+                case CandyType.CompressedSugar:
+                    --_countOfChocolateBar;
+                    break;
+                case CandyType.ZagnutStyle:
+                    --_countOfZagnut;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }
