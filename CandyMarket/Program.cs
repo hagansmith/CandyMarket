@@ -26,13 +26,14 @@ namespace CandyMarket
 						// select a candy type
 						var selectedCandyType = AddNewCandyType(db);
 
-						/** MORE DIFFICULT DATA MODEL
+                        /** MORE DIFFICULT DATA MODEL
 						 * show a new menu to enter candy details
 						 * it would be convenient to show the menu in stages e.g. press enter to go to next detail stage, but write the whole screen again with responses populated so far.
 						 */
+                        var selectedCandyFlavor = AddNewCandyFlavor(db);
 
 						// if(moreDifficultDataModel) bug - this is passing candy type right now (which just increments in our DatabaseContext), but should also be passing candy details
-						db.SaveNewCandy(selectedCandyType.KeyChar);
+						db.SaveNewCandy(selectedCandyFlavor.KeyChar);
 						break;
 					case '2':
 						/** eat candy
@@ -75,7 +76,8 @@ namespace CandyMarket
 			}
 		}
 
-		static DatabaseContext SetupNewApp()
+
+        static DatabaseContext SetupNewApp()
 		{
 			Console.Title = "Cross Confectioneries Incorporated";
 
@@ -114,5 +116,18 @@ namespace CandyMarket
 			ConsoleKeyInfo selectedCandyType = Console.ReadKey();
 			return selectedCandyType;
 		}
-	}
+
+        static ConsoleKeyInfo AddNewCandyFlavor(DatabaseContext db)
+        {
+            var candyFlavors = db.GetCandyFlavors();
+
+            var newCandyMenu = new View()
+                .AddMenuText("What flavor candy did you get")
+                .AddMenuOptions(candyFlavors);
+
+            Console.Write(newCandyMenu.GetFullMenu());
+            ConsoleKeyInfo selectedCandyFlavor = Console.ReadKey();
+            return selectedCandyFlavor;
+        }
+    }
 }

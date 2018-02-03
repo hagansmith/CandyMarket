@@ -29,7 +29,16 @@ namespace CandyMarket
 				.ToList();
 		}
 
-		internal void SaveNewCandy(char selectedCandyMenuOption)
+        internal List<string> GetCandyFlavors()
+        {
+            return Enum
+                .GetNames(typeof(CandyFlavor))
+                .Select(candyFlavor =>
+                    candyFlavor.Humanize(LetterCasing.Title))
+                .ToList();
+        }
+
+        internal void SaveNewCandy(char selectedCandyMenuOption)
 		{
 			var candyOption = int.Parse(selectedCandyMenuOption.ToString());
 
