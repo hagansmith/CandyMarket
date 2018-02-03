@@ -23,48 +23,42 @@ namespace CandyMarket
 						break;
 					case '1': // add candy to your bag
 
-						// select a candy type
-						var selectedCandyType = AddNewCandyType(db);
+                        AddCandy(db);
+                        CandyBag(db);
 
-                        /** MORE DIFFICULT DATA MODEL
-						 * show a new menu to enter candy details
-						 * it would be convenient to show the menu in stages e.g. press enter to go to next detail stage, but write the whole screen again with responses populated so far.
-						 */
-                        var selectedCandyFlavor = AddNewCandyFlavor(db);
-
-						// if(moreDifficultDataModel) bug - this is passing candy type right now (which just increments in our DatabaseContext), but should also be passing candy details
-						db.SaveNewCandy(selectedCandyFlavor.KeyChar);
-						break;
+                        break;
 					case '2':
-                        /** eat candy
-						 * select a candy type*/
-						 selectedCandyType = RemoveCandyType(db);
+                        /** eat candy */
+                        RemoveCandy(db);
+                        CandyBag(db);
                         /* select specific candy details to eat from list filtered to selected candy type
                         * 
                         * enjoy candy
                         */
-                        db.RemoveNewCandy(selectedCandyType.KeyChar);
+
                         break;
 					case '3':
                         /** throw away candy
 						 * select a candy type*/
-                          selectedCandyType = RemoveCandyType(db);
+                        RemoveCandy(db);
+                        CandyBag(db);
                         /* if(moreDifficultDataModel) enhancement - give user the option to throw away old candy in one action. this would require capturing the detail of when the candy was new.
                         * 
                         * select specific candy details to throw away from list filtered to selected candy type
                         * 
                         * cry for lost candy
                         */
-                        db.RemoveNewCandy(selectedCandyType.KeyChar);
+
                         break;
 					case '4':
                         /** give candy
 						 * feel free to hardcode your users. no need to create a whole UI to register users.
 						 * no one is impressed by user registration unless it's just amazingly fast & simple
 						 */
-                        var selectedFriend = TradeWithFriend(db);
-                        selectedCandyType = RemoveCandyType(db);
-                        db.RemoveNewCandy(selectedCandyType.KeyChar);
+                        SelectFriend(db);
+                        RemoveCandy(db);
+                        CandyBag(db);
+
                         /* select candy in any manner you prefer.
                         * it may be easiest to reuse some code for throwing away candy since that's basically what you're doing. except instead of throwing it away, you're giving it away to another user.
                         * you'll need a way to select what user you're giving candy to.
@@ -72,17 +66,46 @@ namespace CandyMarket
                         */
                         break;
 					case '5':
-						/** trade candy
+                        /** trade candy
 						 * this is the next logical step. who wants to just give away candy forever?
                          * be able to remove and add candy
 						 */
-						break;
+                        SelectFriend(db);
+                        RemoveCandy(db);
+                        AddCandy(db);
+                        CandyBag(db);
+                        break;
 					default: // what about requesting candy? like a wishlist. that would be cool.
 						break;
 				}
 			}
 		}
 
+         static void AddCandy(DatabaseContext db)
+        {
+            // select a candy type
+            var selectedCandyType = AddNewCandyType(db);
+            /** MORE DIFFICULT DATA MODEL
+				* show a new menu to enter candy details
+				* it would be convenient to show the menu in stages e.g. press enter to go to next detail stage, but write the whole screen again with responses populated so far.
+		    */
+            var selectedCandyFlavor = AddNewCandyFlavor(db);
+            // if(moreDifficultDataModel) bug - this is passing candy type right now (which just increments in our DatabaseContext), but should also be passing candy details
+            db.SaveNewCandy(selectedCandyFlavor.KeyChar);
+        }
+
+        static void RemoveCandy(DatabaseContext db)
+        {
+            //select a candy type 
+            var selectedCandyType = RemoveCandyType(db);
+            // Remove selected candy
+            db.RemoveNewCandy(selectedCandyType.KeyChar);
+        }
+
+        static void SelectFriend(DatabaseContext db)
+        {
+            var selectedFriend = TradeWithFriend(db);
+        }
 
         static DatabaseContext SetupNewApp()
 		{
@@ -159,6 +182,24 @@ namespace CandyMarket
             var newCandyMenu = new View()
                     .AddMenuText("What type of candy is gone?")
                     .AddMenuOptions(candyTypes);
+
+            Console.Write(newCandyMenu.GetFullMenu());
+
+            ConsoleKeyInfo selectedCandyType = Console.ReadKey();
+            return selectedCandyType;
+        }
+
+        static ConsoleKeyInfo CandyBag(DatabaseContext db)
+        {
+            var candyCounts = db.CandyBag();
+
+            var newCandyMenu = new View()
+                    .AddMenuText("Your candy bag");
+
+            foreach (var candy in candyCounts) {
+                newCandyMenu.AddMenuText($"{candy.Key } --- {candy.Value}");
+                 }   
+             newCandyMenu.AddMenuText("Press enter to return");
 
             Console.Write(newCandyMenu.GetFullMenu());
 
