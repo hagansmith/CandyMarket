@@ -97,7 +97,10 @@ namespace CandyMarket
 			View mainMenu = new View()
 					.AddMenuOption("Did you just get some new candy? Add it here.")
 					.AddMenuOption("Do you want to eat some candy? Take it here.")
-					.AddMenuText("Press 0 to exit.");
+                    .AddMenuOption("Did you throw candy away? Remove it here.")
+                    .AddMenuOption("Did you give candy away? Remove it here")
+                    .AddMenuOption("Would you like to trade some candy? Trade here")
+                    .AddMenuText("Press 0 to exit.");
 
 			Console.Write(mainMenu.GetFullMenu());
 			ConsoleKeyInfo userOption = Console.ReadKey();
