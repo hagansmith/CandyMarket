@@ -9,6 +9,9 @@ namespace CandyMarket
         Cherry = 1,
 		Blue,
 		Grape,
-		Bannana
+		Bannana,
+        Coconut,
+        Almond,
+        Chunky
     }
 }

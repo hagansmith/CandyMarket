@@ -38,37 +38,43 @@ namespace CandyMarket
 					case '2':
                         /** eat candy
 						 * select a candy type*/
-						 selectedCandyType = EatCandyType(db);
+						 selectedCandyType = RemoveCandyType(db);
                         /* select specific candy details to eat from list filtered to selected candy type
                         * 
                         * enjoy candy
                         */
-                        db.EatNewCandy(selectedCandyType.KeyChar);
+                        db.RemoveNewCandy(selectedCandyType.KeyChar);
                         break;
 					case '3':
-						/** throw away candy
-						 * select a candy type
-						 * if(moreDifficultDataModel) enhancement - give user the option to throw away old candy in one action. this would require capturing the detail of when the candy was new.
-						 * 
-						 * select specific candy details to throw away from list filtered to selected candy type
-						 * 
-						 * cry for lost candy
-						 */
-						break;
+                        /** throw away candy
+						 * select a candy type*/
+                          selectedCandyType = RemoveCandyType(db);
+                        /* if(moreDifficultDataModel) enhancement - give user the option to throw away old candy in one action. this would require capturing the detail of when the candy was new.
+                        * 
+                        * select specific candy details to throw away from list filtered to selected candy type
+                        * 
+                        * cry for lost candy
+                        */
+                        db.RemoveNewCandy(selectedCandyType.KeyChar);
+                        break;
 					case '4':
-						/** give candy
+                        /** give candy
 						 * feel free to hardcode your users. no need to create a whole UI to register users.
 						 * no one is impressed by user registration unless it's just amazingly fast & simple
-						 * 
-						 * select candy in any manner you prefer.
-						 * it may be easiest to reuse some code for throwing away candy since that's basically what you're doing. except instead of throwing it away, you're giving it away to another user.
-						 * you'll need a way to select what user you're giving candy to.
-						 * one design suggestion would be to put candy "on the table" and then "give the candy on the table" to another user once you've selected all the candy to give away
 						 */
-						break;
+                        var selectedFriend = TradeWithFriend(db);
+                        selectedCandyType = RemoveCandyType(db);
+                        db.RemoveNewCandy(selectedCandyType.KeyChar);
+                        /* select candy in any manner you prefer.
+                        * it may be easiest to reuse some code for throwing away candy since that's basically what you're doing. except instead of throwing it away, you're giving it away to another user.
+                        * you'll need a way to select what user you're giving candy to.
+                        * one design suggestion would be to put candy "on the table" and then "give the candy on the table" to another user once you've selected all the candy to give away
+                        */
+                        break;
 					case '5':
 						/** trade candy
 						 * this is the next logical step. who wants to just give away candy forever?
+                         * be able to remove and add candy
 						 */
 						break;
 					default: // what about requesting candy? like a wishlist. that would be cool.
@@ -124,9 +130,9 @@ namespace CandyMarket
         static ConsoleKeyInfo AddNewCandyFlavor(DatabaseContext db)
         {
             var candyFlavors = db.GetCandyFlavors();
-
+            var selectedCandy = "taffy";
             var newCandyMenu = new View()
-                .AddMenuText("What flavor candy did you get")
+                .AddMenuText($"What flavor {selectedCandy} did you get")
                 .AddMenuOptions(candyFlavors);
 
             Console.Write(newCandyMenu.GetFullMenu());
@@ -134,12 +140,24 @@ namespace CandyMarket
             return selectedCandyFlavor;
         }
 
-        static ConsoleKeyInfo EatCandyType(DatabaseContext db)
+        static ConsoleKeyInfo TradeWithFriend(DatabaseContext db)
+        {
+            var friends = db.GetFriends();
+            var friendMenu = new View()
+                .AddMenuText($"Which friend do you want to trade with?")
+                .AddMenuOptions(friends);
+
+            Console.Write(friendMenu.GetFullMenu());
+            ConsoleKeyInfo selectedFriend = Console.ReadKey();
+            return selectedFriend;
+        }
+
+        static ConsoleKeyInfo RemoveCandyType(DatabaseContext db)
         {
             var candyTypes = db.GetCandyTypes();
 
             var newCandyMenu = new View()
-                    .AddMenuText("What type of candy are you going to eat?")
+                    .AddMenuText("What type of candy is gone?")
                     .AddMenuOptions(candyTypes);
 
             Console.Write(newCandyMenu.GetFullMenu());
