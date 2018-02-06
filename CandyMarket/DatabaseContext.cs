@@ -5,20 +5,15 @@ using System.Linq;
 
 namespace CandyMarket
 {
-    internal class DatabaseContext
+    public class DatabaseContext
     {
-        private int _countOfTaffy = 3;
-        private int _countOfCandyCoated = 2;
-        private int _countOfChocolateBar = 1;
-        private int _countOfZagnut;
+        Dictionary<string, int> _taffy = new Dictionary<string, int>();
+        Dictionary<string, int> _candyCoated = new Dictionary<string, int>();
+        Dictionary<string, int> _chocolateBar = new Dictionary<string, int>();
+        Dictionary<string, int> _zagnut = new Dictionary<string, int>();
 
-        /**
-		 * this is just an example.
-		 * feel free to modify the definition of this collection "BagOfCandy" if you choose to implement the more difficult data model.
-		 * Dictionary<CandyType, List<Candy>> BagOfCandy { get; set; }
-		 */
+        //Dictionary<string, Dictionary<string, int>> CandyBag = new Dictionary<string, Dictionary<string, int>>();
 
-        public DatabaseContext(int tone) => Console.Beep(tone, 2500);
 
         internal List<string> GetCandyTypes()
         {
@@ -33,8 +28,6 @@ namespace CandyMarket
         {
             return Enum
                 .GetNames(typeof(CandyFlavor))
-                .Select(candyFlavor =>
-                    candyFlavor.Humanize(LetterCasing.Title))
                 .ToList();
         }
 
@@ -42,68 +35,78 @@ namespace CandyMarket
         {
             return Enum
                 .GetNames(typeof(Friends))
-                .Select(Friends =>
-                    Friends.Humanize(LetterCasing.Title))
                 .ToList();
         }
 
-        internal Dictionary<string, int> CandyBag()
-        {
-            var contents = new Dictionary<string, int>();
-            contents.Add ("Taffy", _countOfTaffy);
-            contents.Add ("Candy Coated", _countOfCandyCoated);
-            contents.Add ("Chocolate Bar", _countOfChocolateBar);
-            contents.Add("Zagnut", _countOfZagnut);
-            
-            return contents;
-        }
+        //internal Dictionary<string, int> CandyBag()
+        //{
+        //    var contents = new Dictionary<string, int>();
+        //    contents.Add("Taffy", _countOfTaffy);
+        //    contents.Add("Candy Coated", _countOfCandyCoated);
+        //    contents.Add("Chocolate Bar", _countOfChocolateBar);
+        //    contents.Add("Zagnut", _countOfZagnut);
 
-        internal void SaveNewCandy(char selectedCandyMenuOption)
+        //    return contents;
+        //}
+
+
+
+        internal void SaveNewCandy(string userName, CandyType candyType, int howMany)
 		{
-			var candyOption = int.Parse(selectedCandyMenuOption.ToString());
+            if (!_taffy.ContainsKey(userName))
+            {
+                _taffy.Add(userName, 0);
+                _candyCoated.Add(userName, 0);
+                _chocolateBar.Add(userName, 0);
+                _zagnut.Add(userName, 0);
+            }
 
-			var maybeCandyMaybeNot = (CandyType)selectedCandyMenuOption;
-			var forRealTheCandyThisTime = (CandyType)candyOption;
-
-			switch (forRealTheCandyThisTime)
+			switch (candyType)
 			{
 				case CandyType.TaffyNotLaffy:
-					++_countOfTaffy;
+					_taffy[userName] += howMany;
 					break;
 				case CandyType.CandyCoated:
-					++_countOfCandyCoated;
+					_candyCoated[userName] += howMany;
 					break;
 				case CandyType.CompressedSugar:
-					++_countOfChocolateBar;
+					_chocolateBar[userName] += howMany;
 					break;
 				case CandyType.ZagnutStyle:
-					++_countOfZagnut;
+					_zagnut[userName] += howMany;
 					break;
 				default:
 					break;
 			}
 		}
 
-        internal void RemoveNewCandy(char selectedCandyMenuOption)
+        internal void RemoveNewCandy(string userName, CandyType candyType, int howMany)
         {
-            var candyOption = int.Parse(selectedCandyMenuOption.ToString());
-
-            var maybeCandyMaybeNot = (CandyType)selectedCandyMenuOption;
-            var forRealTheCandyThisTime = (CandyType)candyOption;
-
-            switch (forRealTheCandyThisTime)
+            switch (candyType)
             {
                 case CandyType.TaffyNotLaffy:
-                    --_countOfTaffy;
+                    if (_taffy[userName] > 0)
+                    {
+                        _taffy[userName] -= howMany; 
+                    }
                     break;
                 case CandyType.CandyCoated:
-                    --_countOfCandyCoated;
+                    if (_candyCoated[userName] > 0)
+                    {
+                        _candyCoated[userName] -= howMany; 
+                    }
                     break;
                 case CandyType.CompressedSugar:
-                    --_countOfChocolateBar;
+                    if (_chocolateBar[userName] > 0)
+                    {
+                        _chocolateBar[userName] -= howMany; 
+                    }
                     break;
                 case CandyType.ZagnutStyle:
-                    --_countOfZagnut;
+                    if (_zagnut[userName] > 0)
+                    {
+                        _zagnut[userName] -= howMany; 
+                    }
                     break;
                 default:
                     break;

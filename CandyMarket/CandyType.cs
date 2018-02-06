@@ -1,6 +1,6 @@
 ﻿namespace CandyMarket
 {
-	enum CandyType
+	public enum CandyType
 	{
 		TaffyNotLaffy = 1,
 		CandyCoated,
